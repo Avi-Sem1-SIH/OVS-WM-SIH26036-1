@@ -1,0 +1,10 @@
+{
+  "name": "OVS-WM Legal Metrology Verification",
+  "short_name": "OVS-WM",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#f3f6fa",
+  "theme_color": "#14529a",
+  "description": "Online verification and digital certification for weighing and measuring instruments.",
+  "icons": []
+}

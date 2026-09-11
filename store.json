@@ -1,0 +1,223 @@
+{
+  "users": [
+    {
+      "name": "Rahul Das",
+      "email": "rahul@example.com",
+      "role": "User",
+      "status": "Active",
+      "passwordHash": "scrypt$dd49e7e7345206efa3fdacb3baa3c5a0$8a1a842a871e448a0973c3b99dc59d3b122e1a47123865d4a68e9fb56ff28cb2feb77c488ec07fa07808e5c266ddf9298b9950ab5c3ea9d977d67e423e359b1b"
+    },
+    {
+      "name": "Amit Sharma",
+      "email": "amit@ovs-wm.com",
+      "role": "Officer",
+      "status": "Active",
+      "passwordHash": "scrypt$c185ad681677fa26cd1fc1b28f7f65f5$972a3ca5eb7b2710a8f74f15cf3f73716c8cb00ec6f2f457fdffc39c6f8b46712291b25b0511ef0dd16be9d7bef63394668439194dd20d23869d0e094cfeb3f0"
+    },
+    {
+      "name": "System Administrator",
+      "email": "admin@ovs-wm.com",
+      "role": "Admin",
+      "status": "Active",
+      "passwordHash": "scrypt$8cb5a70eed772a4289c6f91be1741b32$b62421363de9671580a687b3ddb338b352bf331d72bb44e54d6ff7c708c4f61996e1de26860c216163235dfe4380edaf139e6d90391c6d12caaca4f66105c3e5"
+    },
+    {
+      "name": "Kolkata GATC",
+      "email": "gatc@ovs-wm.com",
+      "role": "GATC",
+      "status": "Active",
+      "passwordHash": "scrypt$8f3615bfe773aea1a749d30eec073bb4$f59c59031896197d76884852a3f2c13bc891bc876f8c3ce6805e13a76a6dec6bbf7f5dd9fc3853d06eab1da375942cdb51a9a9e5cc7d31060a17abccd1536ea2"
+    },
+    {
+      "name": "Mumbai GATC",
+      "email": "mumbai.gatc@ovs-wm.com",
+      "role": "GATC",
+      "status": "Active",
+      "passwordHash": "scrypt$8f3615bfe773aea1a749d30eec073bb4$f59c59031896197d76884852a3f2c13bc891bc876f8c3ce6805e13a76a6dec6bbf7f5dd9fc3853d06eab1da375942cdb51a9a9e5cc7d31060a17abccd1536ea2"
+    },
+    {
+      "name": "Delhi GATC",
+      "email": "delhi.gatc@ovs-wm.com",
+      "role": "GATC",
+      "status": "Active",
+      "passwordHash": "scrypt$8f3615bfe773aea1a749d30eec073bb4$f59c59031896197d76884852a3f2c13bc891bc876f7f5dd9fc3853d06eab1da375942cdb51a9a9e5cc7d31060a17abccd1536ea2"
+    },
+    {
+      "name": "Bengaluru GATC",
+      "email": "bengaluru.gatc@ovs-wm.com",
+      "role": "GATC",
+      "status": "Active",
+      "passwordHash": "scrypt$8f3615bfe773aea1a749d30eec073bb4$f59c59031896197d76884852a3f2c13bc891bc876f7f5dd9fc3853d06eab1da375942cdb51a9a9e5cc7d31060a17abccd1536ea2"
+    }
+  ],
+  "applications": [
+    {
+      "id": "OVS/2026/00021",
+      "applicant": "Rahul Das",
+      "instrument": "Digital Weighing Scale",
+      "officer": "Amit Sharma",
+      "status": "Verified",
+      "date": "28 Aug 2026",
+      "location": "Kolkata",
+      "applicationType": "RE_VERIFICATION",
+      "assignedLMO": "Amit Sharma",
+      "assignedGATC": "Unassigned",
+      "gatcRequired": false,
+      "currentStage": "COMPLETED"
+    },
+    {
+      "id": "OVS/2026/00022",
+      "applicant": "Metro Stores",
+      "instrument": "Platform Scale",
+      "officer": "Amit Sharma",
+      "status": "Inspection Scheduled",
+      "date": "29 Aug 2026",
+      "location": "Kolkata",
+      "scheduledDate": "16 Sept 2026",
+      "scheduledTime": "09:03",
+      "scheduledBy": "Amit Sharma",
+      "applicationType": "RE_VERIFICATION",
+      "assignedLMO": "Amit Sharma",
+      "assignedGATC": "Unassigned",
+      "gatcRequired": false,
+      "currentStage": "DOCUMENT_VERIFICATION"
+    },
+    {
+      "id": "OVS/2026/00024",
+      "applicant": "Green Foods",
+      "instrument": "Electronic Balance",
+      "officer": "Unassigned",
+      "status": "Verified",
+      "date": "30 Aug 2026",
+      "location": "Howrah",
+      "applicationType": "RE_VERIFICATION",
+      "assignedLMO": "Unassigned",
+      "assignedGATC": "Unassigned",
+      "gatcRequired": false,
+      "currentStage": "COMPLETED"
+    },
+    {
+      "id": "OVS/2026/471F06978F91",
+      "applicant": "Rahul Das",
+      "instrument": "Huhu",
+      "applicationType": "FIRST_VERIFICATION",
+      "officer": "Unassigned",
+      "status": "Pending",
+      "date": "15 Sept 2026",
+      "preferredDate": "15 Sept 2026",
+      "location": "Hooghly",
+      "notes": "",
+      "assignedLMO": "Unassigned",
+      "assignedGATC": "Unassigned",
+      "gatcRequired": false,
+      "currentStage": "DOCUMENT_VERIFICATION"
+    }
+  ],
+  "instruments": [
+    {
+      "id": "INS-001",
+      "owner": "Rahul Das",
+      "name": "Digital Weighing Scale",
+      "category": "Weighing Instrument",
+      "location": "Kolkata",
+      "status": "Verified",
+      "validUntil": "19 Aug 2027"
+    },
+    {
+      "id": "INS-002",
+      "owner": "Rahul Das",
+      "name": "Platform Scale",
+      "category": "Weighing Instrument",
+      "location": "Howrah",
+      "status": "Pending",
+      "validUntil": "Inspection required"
+    },
+    {
+      "id": "INS-003",
+      "owner": "Rahul Das",
+      "name": "Electronic Balance",
+      "category": "Measuring Instrument",
+      "location": "Kolkata",
+      "status": "Verified",
+      "validUntil": "11 Jul 2027"
+    }
+  ],
+  "certificates": [
+    {
+      "id": "W&M/26-27/00045",
+      "applicationId": "OVS/2026/00021",
+      "applicant": "Rahul Das",
+      "instrument": "Digital Weighing Scale",
+      "issuedOn": "19 Aug 2026",
+      "validUntil": "19 Aug 2027",
+      "issuedBy": "Amit Sharma",
+      "status": "Active"
+    },
+    {
+      "id": "W&M/26-27/93D1F4579B33",
+      "applicationId": "OVS/2026/00024",
+      "applicant": "Green Foods",
+      "instrument": "Electronic Balance",
+      "issuedOn": "07 Sept 2026",
+      "validUntil": "07 Sept 2027",
+      "issuedBy": "State LMO Demo",
+      "status": "Active"
+    }
+  ],
+  "officers": [
+    {
+      "name": "Amit Sharma",
+      "email": "amit@ovs-wm.com",
+      "assigned": 12,
+      "status": "On Leave",
+      "role": "Officer"
+    },
+    {
+      "name": "Neha Roy",
+      "email": "neha@ovs-wm.com",
+      "assigned": 8,
+      "status": "On Leave"
+    },
+    {
+      "name": "Rakesh Kumar",
+      "email": "rakesh@ovs-wm.com",
+      "assigned": 0,
+      "status": "On Leave"
+    },
+    {
+      "name": "Kolkata GATC",
+      "email": "gatc@ovs-wm.com",
+      "assigned": 0,
+      "status": "Active",
+      "role": "GATC"
+    },
+    {
+      "name": "Mumbai GATC",
+      "email": "mumbai.gatc@ovs-wm.com",
+      "role": "GATC",
+      "assigned": 0,
+      "status": "Active"
+    },
+    {
+      "name": "Delhi GATC",
+      "email": "delhi.gatc@ovs-wm.com",
+      "role": "GATC",
+      "assigned": 0,
+      "status": "Active"
+    },
+    {
+      "name": "Bengaluru GATC",
+      "email": "bengaluru.gatc@ovs-wm.com",
+      "role": "GATC",
+      "assigned": 0,
+      "status": "Active"
+    }
+  ],
+  "settings": {
+    "maintenance": false,
+    "emailNotifications": true,
+    "autoAssignment": true
+  },
+  "officerRequests": [],
+  "enforcementCases": []
+}

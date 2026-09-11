@@ -1,0 +1,137 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="OVS-WM online verification system for weighing and measurement instruments">
+    <title>OVS-WM | Online Verification System</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="manifest" href="/manifest.webmanifest">
+    <meta name="theme-color" content="#14529a">
+</head>
+<body>
+    <div class="login-page" id="loginPage">
+        <main class="login-layout">
+            <section class="login-hero" aria-labelledby="heroTitle">
+                <div class="login-brand">
+                    <div class="brandmark" aria-hidden="true">LM</div>
+                    <div>
+                        <b>OVS-WM / VERIFIER</b>
+                        <small>LEGAL METROLOGY OPERATIONS</small>
+                    </div>
+                </div>
+
+                <div class="hero-content">
+                    <p class="eyebrow">STATE LMO + GATC PORTAL</p>
+                    <h1 id="heroTitle">A clearer route from inspection to trust.</h1>
+                    <p>
+                        One operational workspace for applications, field checks,
+                        certificates, and accountable decisions.
+                    </p>
+
+                    <div class="hero-features">
+                        <span><b>01</b> Review assigned applications</span>
+                        <span><b>02</b> Record inspection evidence</span>
+                        <span><b>03</b> Issue trusted certificates</span>
+                    </div>
+                </div>
+            </section>
+
+            <section class="login-panel" aria-labelledby="loginTitle">
+                <div class="login-card">
+                    <p class="eyebrow dark">SECURE ACCESS</p>
+                    <h1 class="login-title" id="loginTitle">Enter the verifier desk</h1>
+                    <p class="login-subtitle">Choose your workspace to continue.</p>
+
+                    <div class="field">
+                        <span id="accountTypeLabel">Account type</span>
+                        <div class="role-tabs" aria-labelledby="accountTypeLabel">
+                            <button class="role-tab active" data-role="User" type="button" aria-pressed="true">Applicant</button>
+                            <button class="role-tab" data-role="Officer" type="button" aria-pressed="false">State LMO</button>
+                            <button class="role-tab" data-role="GATC" type="button" aria-pressed="false">GATC</button>
+                            <button class="role-tab" data-role="Admin" type="button" aria-pressed="false">Admin</button>
+                        </div>
+                    </div>
+
+                    <form class="login-form" id="loginForm" autocomplete="on">
+                        <input type="hidden" id="selectedRole" value="User">
+
+                        <div class="field">
+                            <label for="loginEmail">Email</label>
+                            <input
+                                id="loginEmail"
+                                name="username"
+                                type="text"
+                                autocomplete="username"
+                                required
+                                placeholder="Enter your email">
+                        </div>
+
+                        <div class="field">
+                            <label for="loginPassword">Password</label>
+                            <input
+                                id="loginPassword"
+                                name="password"
+                                type="password"
+                                autocomplete="current-password"
+                                required
+                                placeholder="Enter password">
+                        </div>
+
+                        <div class="login-error" id="loginError" role="alert" aria-live="polite" hidden>
+                            Please enter your email or user ID and password.
+                        </div>
+
+                        <button class="btn primary" id="loginButton" type="submit">
+                            Sign in as User
+                        </button>
+                    </form>
+
+                    <div class="demo-login" aria-labelledby="demoLoginTitle">
+                        <div class="demo-login-heading">
+                            <span class="eyebrow dark" id="demoLoginTitle">DEMO ACCOUNTS</span>
+                            <span class="muted">Fill credentials</span>
+                        </div>
+                        <div class="demo-login-buttons">
+                            <button class="demo-login-button" type="button" data-demo-role="User" data-demo-email="rahul@example.com" data-demo-password="password">
+                                <strong>Rahul Das</strong>
+                                <span>Applicant</span>
+                            </button>
+                            <button class="demo-login-button" type="button" data-demo-role="Officer" data-demo-email="amit@ovs-wm.com" data-demo-password="password">
+                                <strong>Amit Sharma</strong>
+                                <span>State LMO</span>
+                            </button>
+                            <button class="demo-login-button" type="button" data-demo-role="GATC" data-demo-email="gatc@ovs-wm.com" data-demo-password="password">
+                                <strong>Kolkata GATC</strong>
+                                <span>GATC</span>
+                            </button>
+                            <button class="demo-login-button" type="button" data-demo-role="Admin" data-demo-email="admin@ovs-wm.com" data-demo-password="password">
+                                <strong>System Administrator</strong>
+                                <span>Admin</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <button class="btn secondary register-button" id="registerButton" type="button">
+                        Create a new user account
+                    </button>
+
+                    <p class="muted login-security-note">
+                        Your information is protected by secure portal access.
+                    </p>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <div id="app"></div>
+
+    <script src="script.js" defer></script>
+    <script src="notifications.js" defer></script>
+    <script src="qr-system.js" defer></script>
+</body>
+</html>

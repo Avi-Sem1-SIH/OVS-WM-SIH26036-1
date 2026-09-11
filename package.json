@@ -1,0 +1,8 @@
+{
+  "name": "ovs-wm-sih26036",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Backend and static server for the OVS-WM prototype",
+  "scripts": { "start": "node server.js" },
+  "engines": { "node": ">=18" }
+}
