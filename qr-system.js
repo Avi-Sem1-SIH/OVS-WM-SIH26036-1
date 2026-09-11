@@ -94,52 +94,49 @@
         if (typeof toast === 'function') toast('QR code opened for download');
     }
 
-    function verifyCertificate(certificateId) {
-        const row = [...document.querySelectorAll('.table tbody tr')]
-            .find(item => item.cells[0]?.textContent.trim() === certificateId);
-
-        if (!row) {
-            if (typeof toast === 'function') {
-                toast('Certificate verification data is unavailable');
-            }
-            return;
-        }
-
-        const certificate = getCertificateData(row);
+    async function verifyCertificate(certificateId) {
         removeModal();
+        try {
+            const response = await fetch(`/api/certificates/${encodeURIComponent(certificateId)}/public`);
+            if (!response.ok) throw new Error('Certificate not found');
+            const { certificate } = await response.json();
+            const isValid = ['Active', 'Expiring Soon'].includes(certificate.status);
 
-        document.body.insertAdjacentHTML('beforeend', `
-            <div class="modalbg qr-system-modal">
-                <div class="modal" role="dialog" aria-modal="true" aria-labelledby="verificationTitle">
-                    <button class="close qr-close" type="button" aria-label="Close">×</button>
-                    <h2 id="verificationTitle">Certificate Verification</h2>
+            document.body.insertAdjacentHTML('beforeend', `
+                <div class="modalbg qr-system-modal">
+                    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="verificationTitle">
+                        <button class="close qr-close" type="button" aria-label="Close">×</button>
+                        <h2 id="verificationTitle">Certificate Verification</h2>
 
-                    <div class="notice" style="color:var(--green);background:var(--green-soft);border-color:#b7e3c8">
-                        ✓ Certificate record found
+                        <div class="notice" style="color:${isValid ? 'var(--green)' : 'var(--red)'};background:${isValid ? 'var(--green-soft)' : 'var(--red-soft)'};border-color:${isValid ? '#b7e3c8' : '#f0b6ad'}">
+                            ${isValid ? '✓ Certificate record found' : '⚠ Certificate record is not currently valid'}
+                        </div>
+
+                        <div class="card" style="margin-top:18px">
+                            <p><b>Certificate ID:</b> ${escapeHtml(certificate.id)}</p>
+                            <p><b>Applicant:</b> ${escapeHtml(certificate.applicant)}</p>
+                            <p><b>Instrument:</b> ${escapeHtml(certificate.instrument)}</p>
+                            <p><b>Issued On:</b> ${escapeHtml(certificate.issuedOn)}</p>
+                            <p><b>Valid Until:</b> ${escapeHtml(certificate.validUntil)}</p>
+                            <p><b>Status:</b> ${escapeHtml(certificate.status)}</p>
+                        </div>
+
+                        <button class="btn primary qr-close-action" type="button" style="width:100%;margin-top:18px">
+                            Close
+                        </button>
                     </div>
-
-                    <div class="card" style="margin-top:18px">
-                        <p><b>Certificate ID:</b> ${escapeHtml(certificate.id)}</p>
-                        <p><b>Applicant:</b> ${escapeHtml(certificate.applicant)}</p>
-                        <p><b>Instrument:</b> ${escapeHtml(certificate.instrument)}</p>
-                        <p><b>Issued On:</b> ${escapeHtml(certificate.issuedOn)}</p>
-                        <p><b>Valid Until:</b> ${escapeHtml(certificate.validUntil)}</p>
-                        <p><b>Status:</b> ${escapeHtml(certificate.status)}</p>
-                    </div>
-
-                    <button class="btn primary qr-close-action" type="button" style="width:100%;margin-top:18px">
-                        Close
-                    </button>
                 </div>
-            </div>
-        `);
+            `);
 
-        const modal = document.querySelector('.qr-system-modal');
-        modal.querySelectorAll('.qr-close, .qr-close-action')
-            .forEach(button => button.addEventListener('click', removeModal));
-        modal.addEventListener('click', event => {
-            if (event.target === modal) removeModal();
-        });
+            const modal = document.querySelector('.qr-system-modal');
+            modal.querySelectorAll('.qr-close, .qr-close-action')
+                .forEach(button => button.addEventListener('click', removeModal));
+            modal.addEventListener('click', event => {
+                if (event.target === modal) removeModal();
+            });
+        } catch {
+            if (typeof toast === 'function') toast('Certificate verification failed');
+        }
     }
 
     function addQrButtons() {

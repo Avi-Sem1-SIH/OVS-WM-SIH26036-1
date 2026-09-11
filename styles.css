@@ -1417,6 +1417,60 @@ textarea:focus-visible {
     white-space: nowrap;
 }
 
+.assignment-panel {
+    margin-top: 18px;
+    padding: 20px;
+    background: #fff;
+    border: 1px solid #cfe0ef;
+    border-top: 4px solid var(--coral);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-sm);
+}
+
+.assignment-panel-head {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 18px;
+    margin-bottom: 18px;
+}
+
+.assignment-panel-head h2 {
+    margin: 4px 0;
+    color: var(--navy);
+}
+
+.assignment-panel-head p {
+    margin: 0;
+}
+
+.assignment-stats {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 10px;
+    margin-bottom: 18px;
+}
+
+.assignment-stats div {
+    display: grid;
+    gap: 2px;
+    padding: 13px 15px;
+    background: var(--ink-soft);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+}
+
+.assignment-stats b {
+    color: var(--navy);
+    font-size: 22px;
+}
+
+.assignment-stats span {
+    color: var(--muted);
+    font-size: 11px;
+    font-weight: 700;
+}
+
 .gatc-context {
     display: flex;
     align-items: flex-start;
@@ -1805,6 +1859,14 @@ textarea:focus-visible {
     .certrow {
         grid-template-columns: 145px minmax(0, 1fr);
     }
+
+    .assignment-panel-head {
+        flex-direction: column;
+    }
+
+    .assignment-panel-head .btn {
+        width: 100%;
+    }
 }
 
 @media (max-width: 520px) {
@@ -1818,6 +1880,10 @@ textarea:focus-visible {
 
     .content {
         padding: 19px 14px;
+    }
+
+    .assignment-stats {
+        grid-template-columns: 1fr;
     }
 
     .cards {

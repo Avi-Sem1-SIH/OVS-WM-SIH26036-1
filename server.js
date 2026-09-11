@@ -313,7 +313,7 @@ function validateUserCollections(store, input, user) {
       if (previous && !sameRecord(previous, item)) reject('Existing applications cannot be edited by users');
       const instrument = store.instruments.find(record => record.owner === user.name &&
         (record.id === item.instrumentId || record.name === item.instrument));
-      if (!instrument) reject('Applications must reference one of your registered instruments');
+      if (!previous && !instrument) reject('Applications must reference one of your registered instruments');
       if (!previous && (item.status !== 'Application Submitted' || item.currentStage !== 'DOCUMENT_VERIFICATION' ||
         item.officer !== 'Unassigned' || !APPLICATION_TYPES.includes(item.applicationType) ||
         item.assignedLMO !== 'Unassigned' || item.assignedGATC !== 'Unassigned')) {
@@ -401,7 +401,8 @@ function validateOfficerCollections(store, input, user) {
         item.status !== previous.status && !['Verified', 'Certificate Generated'].includes(previous.status)) {
         reject('Certificate workflow must follow verification');
       }
-      if (item.status === 'Verification Scheduled' && item.scheduledBy !== user.name) reject('Schedule must record the assigned verifier');
+      if (['Verification Scheduled', 'Inspection Scheduled', 'GATC Verification Scheduled'].includes(item.status) &&
+        item.scheduledBy !== user.name) reject('Schedule must record the assigned verifier');
       if (item.status === 'GATC Verification Required') {
         if (isGatc || item.applicationType !== 'RE_VERIFICATION' || !item.gatcRequired ||
           !item.fieldVerification?.reason || !item.fieldVerification?.observations) {
@@ -493,6 +494,32 @@ function validateAdminCollections(store, input, user) {
   for (const key of ['instruments', 'certificates', 'officers', 'enforcementCases', 'settings']) {
     if (input[key] !== undefined) store[key] = input[key];
   }
+}
+
+function autoAssignFirstVerifications(store) {
+  if (!store.settings.autoAssignment) return;
+
+  const gatcs = store.officers.filter(officer =>
+    officer.role === 'GATC' && officer.status === 'Active'
+  );
+  if (!gatcs.length) return;
+
+  const assignedCount = name => store.applications.filter(application =>
+    application.assignedGATC === name &&
+    !['Verified', 'Verification Rejected', 'Application Rejected', 'Completed'].includes(application.status)
+  ).length;
+
+  store.applications.forEach(application => {
+    if (application.applicationType !== 'FIRST_VERIFICATION' ||
+        application.assignedGATC !== 'Unassigned' ||
+        application.status !== 'Application Submitted') return;
+
+    const verifier = [...gatcs].sort((left, right) => assignedCount(left.name) - assignedCount(right.name))[0];
+    application.assignedGATC = verifier.name;
+    application.officer = verifier.name;
+    application.status = 'GATC Assigned';
+    application.currentStage = 'GATC_ASSIGNED';
+  });
 }
 
 async function handleApi(request, response, url) {
@@ -595,6 +622,8 @@ async function handleApi(request, response, url) {
     store.applications.forEach(item => {
       if (item.applicant === previousName) item.applicant = name;
       if (item.officer === previousName) item.officer = name;
+      if (item.assignedLMO === previousName) item.assignedLMO = name;
+      if (item.assignedGATC === previousName) item.assignedGATC = name;
       if (item.scheduledBy === previousName) item.scheduledBy = name;
       if (item.inspectedBy === previousName) item.inspectedBy = name;
       if (item.rejectedBy === previousName) item.rejectedBy = name;
@@ -695,7 +724,7 @@ async function handleApi(request, response, url) {
     if (!complaint || complaint.status !== 'Pending Admin Decision') return json(response, 404, { error: 'Pending complaint not found' });
     if (!['Suspend', 'Ban', 'Reject'].includes(input.decision)) return json(response, 400, { error: 'Choose Suspend, Ban, or Reject' });
 
-    complaint.status = input.decision === 'Reject' ? 'Rejected' : `Owner ${input.decision}ned`;
+    complaint.status = input.decision === 'Reject' ? 'Rejected' : `Owner ${input.decision === 'Suspend' ? 'Suspended' : 'Banned'}`;
     complaint.decision = input.decision;
     complaint.decidedOn = new Date().toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' });
     complaint.decidedBy = user.name;
@@ -722,6 +751,7 @@ async function handleApi(request, response, url) {
       if (latestUser.role === 'Admin') validateAdminCollections(latestStore, input, latestUser);
       else if (['Officer', 'GATC'].includes(latestUser.role)) validateOfficerCollections(latestStore, input, latestUser);
       else validateUserCollections(latestStore, input, latestUser);
+      if (latestUser.role === 'User') autoAssignFirstVerifications(latestStore);
       await saveStore(latestStore);
       return { data: publicStore(latestStore, latestUser) };
     });

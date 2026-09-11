@@ -17,7 +17,12 @@
         const context = window.getNotificationContext?.() || { applications: [], certificates: [], state: {} };
         const visibleApplications = context.applications.filter(application => {
             if (context.state.role === 'User') return application.applicant === context.state.user.name;
-            if (['Officer', 'GATC'].includes(context.state.role)) return application.officer === context.state.user.name;
+            if (context.state.role === 'Officer') {
+                return application.assignedLMO === context.state.user.name || application.officer === context.state.user.name;
+            }
+            if (context.state.role === 'GATC') {
+                return application.assignedGATC === context.state.user.name || application.officer === context.state.user.name;
+            }
             return true;
         });
 

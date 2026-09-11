@@ -70,7 +70,7 @@
       "applicant": "Metro Stores",
       "instrument": "Platform Scale",
       "officer": "Amit Sharma",
-      "status": "Inspection Scheduled",
+      "status": "LMO Assigned",
       "date": "29 Aug 2026",
       "location": "Kolkata",
       "scheduledDate": "16 Sept 2026",
@@ -80,7 +80,7 @@
       "assignedLMO": "Amit Sharma",
       "assignedGATC": "Unassigned",
       "gatcRequired": false,
-      "currentStage": "DOCUMENT_VERIFICATION"
+      "currentStage": "LMO_ASSIGNED"
     },
     {
       "id": "OVS/2026/00024",
@@ -101,16 +101,32 @@
       "applicant": "Rahul Das",
       "instrument": "Huhu",
       "applicationType": "FIRST_VERIFICATION",
-      "officer": "Unassigned",
-      "status": "Pending",
+      "officer": "Kolkata GATC",
+      "status": "GATC Assigned",
       "date": "15 Sept 2026",
       "preferredDate": "15 Sept 2026",
       "location": "Hooghly",
       "notes": "",
       "assignedLMO": "Unassigned",
-      "assignedGATC": "Unassigned",
+      "assignedGATC": "Kolkata GATC",
       "gatcRequired": false,
-      "currentStage": "DOCUMENT_VERIFICATION"
+      "currentStage": "GATC_ASSIGNED"
+    },
+    {
+      "id": "OVS/2026/C3E17F957F20",
+      "applicant": "Rahul Das",
+      "instrument": "Digital Weighing Scale",
+      "applicationType": "RE_VERIFICATION",
+      "officer": "Unassigned",
+      "assignedLMO": "Unassigned",
+      "assignedGATC": "Unassigned",
+      "currentStage": "DOCUMENT_VERIFICATION",
+      "gatcRequired": false,
+      "status": "Application Submitted",
+      "date": "23 Sept 2026",
+      "preferredDate": "23 Sept 2026",
+      "location": "Kolkata",
+      "notes": ""
     }
   ],
   "instruments": [
@@ -169,7 +185,7 @@
       "name": "Amit Sharma",
       "email": "amit@ovs-wm.com",
       "assigned": 12,
-      "status": "On Leave",
+      "status": "Active",
       "role": "Officer"
     },
     {
@@ -182,7 +198,7 @@
       "name": "Rakesh Kumar",
       "email": "rakesh@ovs-wm.com",
       "assigned": 0,
-      "status": "On Leave"
+      "status": "Active"
     },
     {
       "name": "Kolkata GATC",

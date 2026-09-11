@@ -160,7 +160,8 @@ async function flushPendingState() {
     if (!queued || !state.user?.email) return;
     try {
         const payload = JSON.parse(queued);
-        await apiRequest('/api/state', { method: 'PUT', body: JSON.stringify(payload) });
+            const result = await apiRequest('/api/state', { method: 'PUT', body: JSON.stringify(payload) });
+            applyServerData(result.data);
         localStorage.removeItem(pendingStateKey());
         toast('Offline changes synchronized');
     } catch {
@@ -173,10 +174,11 @@ function persistState() {
     persistTimer = setTimeout(async () => {
         try {
             const payload = currentStatePayload();
-            await apiRequest('/api/state', {
+            const result = await apiRequest('/api/state', {
                 method: 'PUT',
                 body: JSON.stringify(payload)
             });
+            applyServerData(result.data);
         } catch (error) {
             localStorage.setItem(pendingStateKey(), JSON.stringify(currentStatePayload()));
             toast(`Changes queued offline: ${error.message}`);
@@ -338,6 +340,7 @@ const menus = {
     ],
     Admin: [
         ['dashboard', '▣', 'Dashboard'],
+        ['applications', '▤', 'Applications & Assignments'],
         ['officers', '⚖', 'Manage Officers'],
         ['enforcement', '⚠', 'Complaints & Decisions'],
         ['settings', '⚙', 'System Settings'],
@@ -858,6 +861,57 @@ function officerReports() {
 
 /* Admin pages */
 
+function adminAssignmentArea() {
+    const unassigned = applications.filter(application => {
+        const assignment = application.applicationType === 'FIRST_VERIFICATION'
+            ? application.assignedGATC
+            : application.assignedLMO;
+        return assignment === 'Unassigned' &&
+            !['Verified', 'Completed', 'Application Rejected', 'Verification Rejected'].includes(application.status);
+    });
+    const assigned = applications.filter(application =>
+        !['Verified', 'Completed', 'Application Rejected', 'Verification Rejected'].includes(application.status)
+    );
+    const rows = [...unassigned, ...assigned.filter(application => !unassigned.includes(application))].map(application => {
+        const isGatc = application.applicationType === 'FIRST_VERIFICATION' || application.gatcRequired;
+        const verifier = isGatc ? application.assignedGATC : application.assignedLMO;
+        return `
+            <tr>
+                <td><b>${escapeHtml(application.id)}</b></td>
+                <td>${escapeHtml(application.applicant)}</td>
+                <td>${escapeHtml(application.applicationType === 'FIRST_VERIFICATION' ? 'GATC' : 'LMO')}</td>
+                <td>${escapeHtml(verifier || 'Unassigned')}</td>
+                <td>${badge(application.status)}</td>
+                <td><button class="btn secondary" onclick="reviewApplication(${jsArg(application.id)})">Manage</button></td>
+            </tr>
+        `;
+    }).join('');
+
+    return `
+        <div class="assignment-panel">
+            <div class="assignment-panel-head">
+                <div>
+                    <span class="eyebrow dark">WORK ALLOCATION</span>
+                    <h2>Assignment desk</h2>
+                    <p class="muted">Route first verifications to GATCs and re-verifications to State LMOs.</p>
+                </div>
+                <button class="btn primary" onclick="go('applications')">Open full queue</button>
+            </div>
+            <div class="assignment-stats">
+                <div><b>${unassigned.length}</b><span>Needs assignment</span></div>
+                <div><b>${applications.filter(application => application.assignedLMO && application.assignedLMO !== 'Unassigned').length}</b><span>LMO assigned</span></div>
+                <div><b>${applications.filter(application => application.assignedGATC && application.assignedGATC !== 'Unassigned').length}</b><span>GATC assigned</span></div>
+            </div>
+            <div class="tablewrap">
+                <table class="table">
+                    <thead><tr><th>Application</th><th>Applicant</th><th>Route</th><th>Assigned to</th><th>Status</th><th>Action</th></tr></thead>
+                    <tbody>${rows || '<tr><td colspan="6" class="muted">No active applications require allocation.</td></tr>'}</tbody>
+                </table>
+            </div>
+        </div>
+    `;
+}
+
 function adminDashboard() {
     const verifierAccounts = users.filter(user => ['Officer', 'GATC'].includes(user.role));
     const pendingCases = applications.filter(item => ['Pending', 'Inspection Required', 'Inspection Scheduled'].includes(item.status));
@@ -889,11 +943,13 @@ function adminDashboard() {
         <div class="card" style="margin-top:18px">
             <h3>Control centre</h3>
             <div style="display:flex;flex-wrap:wrap;gap:10px">
+                <button class="btn primary" onclick="go('applications')">Open assignment desk</button>
                 <button class="btn secondary" onclick="go('officers')">LMO / GATC approvals</button>
                 <button class="btn secondary" onclick="go('enforcement')">Review complaints</button>
                 <button class="btn secondary" onclick="go('settings')">Security and system controls</button>
             </div>
         </div>
+        ${adminAssignmentArea()}
         <div class="admin-context" role="note">
             <div class="admin-context-mark">ADM</div>
             <div>
@@ -1618,10 +1674,20 @@ function reviewApplication(id) {
     if (!item) return;
 
     const needsGatc = applicationNeedsGatc(item);
-    const eligibleVerifiers = officers.filter(verifier => {
+    const matchingVerifiers = officers.filter(verifier => {
         const account = users.find(user => user.name === verifier.name);
-        return verifier.status === 'Active' && (!account || account.role === (needsGatc ? 'GATC' : 'Officer'));
+        return (!account || account.role === (needsGatc ? 'GATC' : 'Officer'));
     });
+    const eligibleVerifiers = matchingVerifiers.filter(verifier => verifier.status === 'Active');
+    const unavailableVerifiers = matchingVerifiers.filter(verifier => verifier.status !== 'Active');
+    const noEligibleMessage = eligibleVerifiers.length ? '' : `
+        <div class="notice" style="margin-top:16px">
+            No active ${needsGatc ? 'GATC' : 'LMO'} is available for assignment.
+            <button class="btn secondary" type="button" style="margin-top:10px" onclick="closeModal();go('officers')">
+                Manage verifier availability
+            </button>
+        </div>
+    `;
     showModal(`Review ${escapeHtml(item.id)}`, `
         <p><b>Applicant:</b> ${escapeHtml(item.applicant)}</p>
         <p><b>Instrument:</b> ${escapeHtml(item.instrument)}</p>
@@ -1633,12 +1699,14 @@ function reviewApplication(id) {
             <select id="officerSelect">
                 <option value="Unassigned">Unassigned</option>
                 ${eligibleVerifiers.map(x => `<option value="${escapeHtml(x.name)}" ${(needsGatc ? item.assignedGATC : item.assignedLMO) === x.name ? 'selected' : ''}>${escapeHtml(x.name)}</option>`).join('')}
+                ${unavailableVerifiers.map(x => `<option disabled>${escapeHtml(x.name)} (On Leave)</option>`).join('')}
             </select>
         </div>
+        ${noEligibleMessage}
     `, `
         <div style="display:flex;gap:10px;margin-top:20px;flex-wrap:wrap">
             <button class="btn primary" onclick="approveApplication(${jsArg(id)})">Approve</button>
-            <button class="btn secondary" onclick="assignApplication(${jsArg(id)})">Assign</button>
+            <button class="btn secondary" ${eligibleVerifiers.length ? '' : 'disabled'} onclick="assignApplication(${jsArg(id)})">Assign</button>
             <button class="btn danger" onclick="rejectApplication(${jsArg(id)})">Reject</button>
         </div>
     `);
