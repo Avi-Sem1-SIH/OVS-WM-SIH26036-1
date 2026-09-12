@@ -102,7 +102,7 @@
       "instrument": "Huhu",
       "applicationType": "FIRST_VERIFICATION",
       "officer": "Kolkata GATC",
-      "status": "GATC Assigned",
+      "status": "Verified",
       "date": "15 Sept 2026",
       "preferredDate": "15 Sept 2026",
       "location": "Hooghly",
@@ -110,7 +110,21 @@
       "assignedLMO": "Unassigned",
       "assignedGATC": "Kolkata GATC",
       "gatcRequired": false,
-      "currentStage": "GATC_ASSIGNED"
+      "currentStage": "VERIFIED",
+      "inspectedBy": "Kolkata GATC",
+      "inspectedOn": "12 Sept 2026",
+      "inspection": {
+        "standard": "Test",
+        "observedReading": "1",
+        "permissibleError": "0.1",
+        "observations": "Good",
+        "result": "Verified",
+        "conductedBy": "Kolkata GATC",
+        "conductedOn": "12 Sept 2026",
+        "location": null,
+        "evidence": []
+      },
+      "gatcVerificationResult": "Verified"
     },
     {
       "id": "OVS/2026/C3E17F957F20",

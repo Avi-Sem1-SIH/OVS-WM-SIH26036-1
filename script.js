@@ -151,7 +151,8 @@ let persistTimer;
 const pendingStateKey = () => `ovsPendingState:${state.user?.email || 'anonymous'}`;
 
 function currentStatePayload() {
-    const payload = { applications, instruments, certificates };
+    const payload = { applications, certificates };
+    if (state.role === 'User' || state.role === 'Admin') payload.instruments = instruments;
     if (state.role === 'Admin') {
         payload.users = users;
         payload.officers = officers;

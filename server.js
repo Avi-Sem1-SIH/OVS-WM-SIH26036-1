@@ -288,6 +288,12 @@ function sameRecord(left, right) {
   return JSON.stringify(left) === JSON.stringify(right);
 }
 
+function verificationValidUntil() {
+  const date = new Date();
+  date.setMonth(date.getMonth() + 12);
+  return date.toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' });
+}
+
 function reject(message) {
   const error = new Error(message);
   error.statusCode = 400;
@@ -363,6 +369,7 @@ function validateOfficerCollections(store, input, user) {
     if (!Array.isArray(input.applications)) reject('Applications must be an array');
     const incoming = new Map(input.applications.map(item => [item.id, item]));
     const isGatc = user.role === 'GATC';
+    const completedApplications = [];
     const visibleApplications = store.applications.filter(item => isGatc
       ? item.assignedGATC === user.name || item.officer === user.name
       : item.assignedLMO === user.name || item.officer === user.name);
@@ -420,9 +427,18 @@ function validateOfficerCollections(store, input, user) {
       if (item.status === 'Verified') {
         if (isGatc && item.applicationType === 'RE_VERIFICATION' && !item.gatcRequired) reject('Re-verification must complete LMO field verification first');
         if (!isGatc && item.applicationType !== 'RE_VERIFICATION') reject('First verification must be completed by a GATC');
+        if (previous.status !== 'Verified') completedApplications.push(item);
       }
     }
     store.applications = store.applications.map(previous => incoming.get(previous.id) || previous);
+    completedApplications.forEach(application => {
+      const instrument = store.instruments.find(item => item.owner === application.applicant &&
+        (item.id === application.instrumentId || item.name === application.instrument));
+      if (instrument) {
+        instrument.status = 'Verified';
+        instrument.validUntil = verificationValidUntil();
+      }
+    });
   }
 
   if (input.certificates !== undefined) {
