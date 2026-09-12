@@ -109,10 +109,16 @@ const $ = selector => document.querySelector(selector);
 window.getNotificationContext = () => ({ applications, state });
 
 async function apiRequest(path, options = {}) {
-    const response = await fetch(path, {
-        headers: { 'Content-Type': 'application/json', ...(options.headers || {}) },
-        ...options
-    });
+    let response;
+    try {
+        response = await fetch(path, {
+            credentials: 'same-origin',
+            headers: { 'Content-Type': 'application/json', ...(options.headers || {}) },
+            ...options
+        });
+    } catch {
+        throw new Error('Unable to reach the server. Open this app through the Node server with `npm start`, then try again.');
+    }
 
     const payload = await response.json().catch(() => ({}));
     if (!response.ok) throw new Error(payload.error || 'Request failed');
