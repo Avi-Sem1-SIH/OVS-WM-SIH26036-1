@@ -462,7 +462,7 @@ function validateOfficerCollections(store, input, user) {
       const validDates = !Number.isNaN(new Date(certificate.issuedOn).getTime()) &&
         !Number.isNaN(new Date(certificate.validUntil).getTime()) &&
         new Date(certificate.validUntil).getTime() > Date.now();
-      if (!application || !instrument || application.status !== 'Verified' || certificate.issuedBy !== user.name ||
+      if (!application || !instrument || !['Verified', 'Certificate Generated'].includes(application.status) || certificate.issuedBy !== user.name ||
         certificate.applicant !== application.applicant || certificate.instrument !== application.instrument ||
         certificate.instrumentId !== instrument.id || certificate.verificationType !== application.applicationType ||
         certificate.status !== 'Active' || !validDates || !assigned) {
