@@ -164,7 +164,7 @@ OVS-WM can be installed from a supported mobile browser. The service worker cach
 | `manifest.webmanifest` | Installable PWA metadata |
 | `service-worker.js` | Static shell caching and offline fallback |
 | `data/store.json` | Local pilot data store |
-| `render.yaml` | Render deployment configuration |
+| `railway.json` | Railway deployment configuration |
 
 ## Run Locally
 
@@ -212,17 +212,17 @@ The prototype uses a state synchronization endpoint for simple deployment. The s
 
 ## Deployment
 
-The repository includes `render.yaml` for Render.
+The repository includes `railway.json` for Railway.
 
 1. Push the repository to GitHub.
-2. In Render, choose **New > Blueprint**.
-3. Select the repository.
-4. Confirm the service runs `npm start`.
-5. Configure persistent storage for `data/store.json`.
-6. Set `NODE_ENV=production` to enable Secure session cookies.
+2. In Railway, create a project and choose **Deploy from GitHub repo**.
+3. Select the repository; Railway will use `railway.json` and `npm start`.
+4. Add a Railway Volume mounted at `/app/data`.
+5. Set `DATA_DIR=/app/data` and `NODE_ENV=production` in the service variables.
+6. Generate a public domain and confirm the health check passes at `/health`.
 7. Replace all demo credentials before exposing the service publicly.
 
-Use HTTPS, protect the persistent data directory, and back up the persistent disk.
+Use HTTPS, protect the persistent volume, and back up the data regularly. Railway Volumes are available to a single service instance, so run this prototype as one replica.
 
 ## Production Roadmap
 

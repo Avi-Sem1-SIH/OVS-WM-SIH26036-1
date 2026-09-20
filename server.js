@@ -4,8 +4,10 @@ const path = require('node:path');
 const crypto = require('node:crypto');
 
 const PORT = Number(process.env.PORT || 3000);
+const HOST = process.env.HOST || '0.0.0.0';
 const ROOT = __dirname;
-const DATA_FILE = path.join(ROOT, 'data', 'store.json');
+const DATA_DIR = process.env.DATA_DIR || path.join(ROOT, 'data');
+const DATA_FILE = path.join(DATA_DIR, 'store.json');
 const sessions = new Map();
 const SESSION_TTL = 8 * 60 * 60 * 1000;
 let stateMutationQueue = Promise.resolve();
@@ -799,6 +801,10 @@ async function serveStatic(response, pathname) {
 
 http.createServer(async (request, response) => {
   const url = new URL(request.url, `http://${request.headers.host || 'localhost'}`);
-  try { if (url.pathname.startsWith('/api/')) await handleApi(request, response, url); else await serveStatic(response, url.pathname); }
+  try {
+    if (url.pathname === '/health') return json(response, 200, { status: 'ok' });
+    if (url.pathname.startsWith('/api/')) await handleApi(request, response, url);
+    else await serveStatic(response, url.pathname);
+  }
   catch (error) { json(response, response.headersSent ? 500 : 400, { error: error.message }); }
-}).listen(PORT, () => console.log(`OVS-WM server running at http://localhost:${PORT}`));
+}).listen(PORT, HOST, () => console.log(`OVS-WM server running at http://${HOST}:${PORT}`));
